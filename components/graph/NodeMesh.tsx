@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGraphStore } from '@/store/graphStore'
 import { GraphNode } from '@/types/graph'
+import { livePos } from '@/lib/livePositions'
 import * as THREE from 'three'
 
 const LAYER_COLORS = [
@@ -15,17 +16,23 @@ const LAYER_COLORS = [
 interface Props { node: GraphNode }
 
 export function NodeMesh({ node }: Props) {
-  const meshRef    = useRef<THREE.Mesh>(null)
+  const groupRef  = useRef<THREE.Group>(null)
+  const meshRef   = useRef<THREE.Mesh>(null)
   const activeNode = useGraphStore(s => s.activeNode)
-  const zoomTo     = useGraphStore(s => s.zoomTo)
-  const isActive   = activeNode?.id === node.id
-  const t          = useRef(Math.random() * Math.PI * 2)
+  const zoomTo    = useGraphStore(s => s.zoomTo)
+  const isActive  = activeNode?.id === node.id
+  const t         = useRef(Math.random() * Math.PI * 2)
 
   useFrame((_, delta) => {
     t.current += delta * 1.0
-    if (meshRef.current) {
-      const pulse = 1 + Math.sin(t.current + node.x * 0.014) * 0.018
-      meshRef.current.scale.setScalar(pulse)
+    const pulse = 1 + Math.sin(t.current + node.x * 0.014) * 0.018
+    if (meshRef.current) meshRef.current.scale.setScalar(pulse)
+
+    // Track live position from livePos map
+    const [lx, ly] = livePos.get(node.id) ?? [node.x, node.y]
+    if (groupRef.current) {
+      groupRef.current.position.x += (lx - groupRef.current.position.x) * 0.12
+      groupRef.current.position.y += (-ly - groupRef.current.position.y) * 0.12
     }
   })
 
@@ -35,16 +42,12 @@ export function NodeMesh({ node }: Props) {
   const strokeWidth = node.layer === 0 ? 1.5 : isActive ? 1.1 : 0.75
 
   return (
-    <group position={[node.x, -node.y, -node.layer]}>
+    <group ref={groupRef} position={[node.x, -node.y, -node.layer]}>
       {/* Glow halo */}
       {node.layer <= 1 && (
         <mesh>
           <circleGeometry args={[node.r * 2.0, 64]} />
-          <meshBasicMaterial
-            color="#ff6495"
-            transparent
-            opacity={node.layer === 0 ? 0.06 : 0.03}
-          />
+          <meshBasicMaterial color="#ff6495" transparent opacity={node.layer === 0 ? 0.06 : 0.03} />
         </mesh>
       )}
       {/* Opaque fill — occludes nodes behind it */}
@@ -55,11 +58,7 @@ export function NodeMesh({ node }: Props) {
       {/* Stroke ring */}
       <mesh>
         <ringGeometry args={[node.r - strokeWidth, node.r + strokeWidth * 0.5, 64]} />
-        <meshBasicMaterial
-          color={stroke}
-          transparent
-          opacity={strokeOpacity}
-        />
+        <meshBasicMaterial color={stroke} transparent opacity={strokeOpacity} />
       </mesh>
     </group>
   )

@@ -73,8 +73,7 @@ export function NodeLabel({ node }: Props) {
   return (
     <Html
       position={[node.x + dx, -(node.y + dy), -node.layer]}
-      zIndexRange={[20, 20]}
-      occlude="blending"
+      zIndexRange={[100, 0]}
       style={{ pointerEvents: 'none' }}
     >
       <div style={labelStyle} onClick={() => zoomTo(node)}>

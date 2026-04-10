@@ -6,6 +6,7 @@ import { AttractorRings } from './graph/AttractorRings'
 import { EdgeLayer } from './graph/EdgeLayer'
 import { NodeLayer } from './graph/NodeLayer'
 import { NodeLabels } from './graph/NodeLabels'
+import { AmbientText } from './graph/AmbientText'
 
 export function GraphCanvas() {
   return (
@@ -20,6 +21,7 @@ export function GraphCanvas() {
       <CameraRig />
       <FlowLines />
       <AttractorRings />
+      <AmbientText />
       <EdgeLayer />
       <NodeLayer />
       <NodeLabels />

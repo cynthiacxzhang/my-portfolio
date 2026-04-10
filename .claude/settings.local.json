@@ -13,7 +13,18 @@
       "Bash(npm run:*)",
       "Bash(node /Users/Cynthia/cynthiacxzhang-v2/node_modules/next/dist/bin/next build)",
       "Bash(node /Users/Cynthia/cynthiacxzhang-v2/node_modules/next/dist/bin/next dev --port 3000)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git remote:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(git rebase:*)",
+      "Bash(cp /Users/Cynthia/cynthiacxzhang-v2/.claude/settings.local.json /tmp/settings.local.json.bak)",
+      "Bash(cp /tmp/settings.local.json.bak /Users/Cynthia/cynthiacxzhang-v2/.claude/settings.local.json)",
+      "Bash(open http://localhost:3000)",
+      "Bash(kill 94892)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(cursor /Users/Cynthia/cynthiacxzhang-v2)",
+      "Bash(code /Users/Cynthia/cynthiacxzhang-v2)"
     ]
   }
 }
