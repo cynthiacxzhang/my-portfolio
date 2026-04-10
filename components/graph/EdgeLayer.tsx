@@ -1,0 +1,69 @@
+'use client'
+import { useMemo } from 'react'
+import { Line } from '@react-three/drei'
+import { useGraphStore } from '@/store/graphStore'
+import { QuadraticBezierCurve3, Vector3 } from 'three'
+
+const ALPHA_BY_DEPTH = [0.65, 0.42, 0.26, 0.14]
+
+export function EdgeLayer() {
+  const nodes = useGraphStore(s => s.nodes)
+  const edges = useGraphStore(s => s.edges)
+  const nodeMap = useMemo(() => new Map(nodes.map(n => [n.id, n])), [nodes])
+
+  type LineData = {
+    pts: Vector3[]
+    color: string
+    alpha: number
+    width: number
+    dashed: boolean
+  }
+
+  const lines = useMemo<LineData[]>(() => {
+    return edges.flatMap(edge => {
+      const na = nodeMap.get(edge.source)
+      const nb = nodeMap.get(edge.target)
+      if (!na || !nb) return []
+
+      const depth = Math.max(na.layer, nb.layer)
+      const alpha = ALPHA_BY_DEPTH[depth] ?? 0.12
+      const bend  = ((na.x * 7 + nb.y * 3) % 5 > 2) ? 0.24 : -0.20
+      const mx    = (na.x + nb.x) / 2 + (nb.y - na.y) * bend
+      const my    = (na.y + nb.y) / 2 - (nb.x - na.x) * bend
+      const z     = -depth * 0.5
+
+      const pts = new QuadraticBezierCurve3(
+        new Vector3(na.x, -na.y, z),
+        new Vector3(mx,   -my,   z),
+        new Vector3(nb.x, -nb.y, z),
+      ).getPoints(24)
+
+      return [{
+        pts,
+        color:  edge.isCross ? '#ffd278' : '#ffffff',
+        alpha:  edge.isCross ? alpha : alpha * 0.9,
+        width:  depth === 0 ? 1.4 : nb.type === 'label' ? 0.4 : 0.6,
+        dashed: edge.isCross || nb.type === 'label',
+      }]
+    })
+  }, [edges, nodeMap])
+
+  return (
+    <>
+      {lines.map((l, i) => (
+        <Line
+          key={i}
+          points={l.pts}
+          color={l.color}
+          lineWidth={l.width}
+          transparent
+          opacity={l.alpha}
+          dashed={l.dashed}
+          dashScale={l.dashed ? 50 : undefined}
+          dashSize={l.dashed ? 3 : undefined}
+          gapSize={l.dashed ? 6 : undefined}
+        />
+      ))}
+    </>
+  )
+}

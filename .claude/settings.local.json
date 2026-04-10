@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(gh auth:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo:*)",
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node /Users/Cynthia/cynthiacxzhang-v2/node_modules/typescript/lib/tsc.js --noEmit)",
+      "Bash(npm run:*)",
+      "Bash(node /Users/Cynthia/cynthiacxzhang-v2/node_modules/next/dist/bin/next build)",
+      "Bash(node /Users/Cynthia/cynthiacxzhang-v2/node_modules/next/dist/bin/next dev --port 3000)",
+      "Bash(git push:*)"
+    ]
+  }
+}

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cynthia Zhang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#060606;overflow:hidden;}
+#canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;cursor:crosshair;}
+#hud{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;pointer-events:none;}
+
+/* ── Name: top-left with generous margin ── */
+#nameblock{
+  position:absolute;
+  top:52px;
+  left:52px;
+  pointer-events:none;
+}
+#name-big{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:italic;
+  font-weight:600;
+  font-size:58px;
+  color:#fff;
+  line-height:1;
+  letter-spacing:0.01em;
+}
+#name-sub{
+  font-family:'Space Mono',monospace;
+  font-size:8px;
+  color:rgba(255,100,160,0.6);
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  margin-top:22px;
+  white-space:nowrap;
+}
+
+/* ── Panels ── */
+#panel-bio{
+  position:absolute;
+  left:52px;
+  width:194px;
+  padding:20px 22px 18px;
+  border:0.5px solid rgba(255,100,160,0.32);
+  background:rgba(6,6,6,0.92);
+  font-family:'Space Mono',monospace;
+  pointer-events:auto;
+}
+#panel-contact{
+  position:absolute;
+  width:172px;
+  padding:16px 20px 16px;
+  border:0.5px solid rgba(255,100,160,0.2);
+  background:rgba(6,6,6,0.94);
+  font-family:'Space Mono',monospace;
+  pointer-events:auto;
+}
+.ptag{font-size:7.5px;letter-spacing:.22em;color:rgba(255,100,160,.5);text-transform:uppercase;margin-bottom:14px;}
+.prow{font-size:8.5px;color:rgba(255,255,255,.4);line-height:1.85;}
+.prow b{color:rgba(255,255,255,.8);font-weight:700;display:block;}
+.pdiv{width:100%;height:.5px;background:rgba(255,100,160,.1);margin:10px 0;}
+.stat{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.sn{font-size:10px;font-weight:700;color:#fff;min-width:28px;}
+.st{flex:1;height:1px;background:rgba(255,100,160,.15);position:relative;}
+.sf{position:absolute;top:0;left:0;height:100%;background:rgba(255,100,160,.55);}
+.field{width:100%;background:transparent;border:none;border-bottom:.5px solid rgba(255,100,160,.18);color:rgba(255,255,255,.6);font-family:'Space Mono',monospace;font-size:8px;padding:5px 0;margin-bottom:5px;outline:none;display:block;}
+.field::placeholder{color:rgba(255,255,255,.15);}
+.sbtn{margin-top:9px;width:100%;background:rgba(255,100,160,.07);border:.5px solid rgba(255,100,160,.3);color:rgba(255,100,160,.75);font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;padding:7px 0;cursor:pointer;}
+.sbtn:hover{background:rgba(255,100,160,.16);color:#fff;}
+
+/* ── Chrome ── */
+#corner-tr{position:absolute;top:52px;right:52px;font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.22em;color:rgba(255,255,255,.08);text-transform:uppercase;text-align:right;line-height:2;pointer-events:none;}
+#hint{position:absolute;bottom:44px;right:52px;font-family:'Space Mono',monospace;font-size:7px;color:rgba(255,255,255,.13);letter-spacing:.08em;text-align:right;line-height:2.1;pointer-events:none;}
+#back-btn{position:absolute;top:52px;left:50%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.28);background:transparent;border:.5px solid rgba(255,255,255,.12);padding:5px 16px;cursor:pointer;pointer-events:auto;display:none;}
+#back-btn:hover{color:#fff;}
+
+/* ── Node labels ── */
+/* Base: label crosses the bubble edge — transform shifts it so center sits on edge */
+.nlabel{
+  position:absolute;
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:.07em;
+  background:rgba(10,4,8,0.82);
+  border:.5px solid rgba(255,100,160,.55);
+  color:rgba(255,130,175,1);
+  padding:3px 9px;white-space:nowrap;
+  cursor:pointer;pointer-events:auto;
+  z-index:20;
+  transition:background .15s,color .15s;
+  /* default: centered on its anchor point — overridden per-node in JS */
+  transform:translate(-50%,-50%);
+}
+.nlabel:hover{background:rgba(255,100,160,.18);color:#fff;border-color:rgba(255,130,175,.9);}
+/* CZ center label */
+.nlabel.inside{
+  background:rgba(0,0,0,.55);
+  border-color:rgba(255,255,255,.42);
+  color:rgba(255,255,255,.92);
+  font-size:10px;letter-spacing:.15em;
+}
+/* Terminal labels (no circle) */
+.nlabel.terminal{
+  background:rgba(10,4,8,.75);
+  border-color:rgba(255,100,160,.38);
+  color:rgba(255,120,160,.8);
+  font-size:8.5px;
+}
+.nlabel.active{border-color:rgba(255,255,255,.7);color:#fff;}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <div id="nameblock">
+    <div id="name-big">Cynthia Zhang</div>
+    <div id="name-sub">ML Engineer &nbsp;·&nbsp; Uni of Waterloo &nbsp;·&nbsp; Wealthsimple</div>
+  </div>
+
+  <div id="panel-bio">
+    <div class="ptag">Node — CZ — 001</div>
+    <div class="prow"><b>School</b>University of Waterloo</div>
+    <div class="pdiv"></div>
+    <div class="prow"><b>Focus</b>CS + Cognitive Science</div>
+    <div class="pdiv"></div>
+    <div class="prow"><b>Currently</b>Wealthsimple · Building in public</div>
+    <div class="pdiv"></div>
+    <div class="stat"><span class="sn">29%</span><div class="st"><div class="sf" style="width:29%"></div></div></div>
+    <div class="stat"><span class="sn">76%</span><div class="st"><div class="sf" style="width:76%"></div></div></div>
+  </div>
+
+  <div id="panel-contact">
+    <div class="ptag">Contact</div>
+    <input class="field" placeholder="name"/>
+    <input class="field" placeholder="email"/>
+    <input class="field" placeholder="message"/>
+    <button class="sbtn">transmit →</button>
+  </div>
+
+  <div id="corner-tr">Neural Network — CZ.Graph</div>
+  <button id="back-btn" onclick="goBack()">← back</button>
+  <div id="hint">scroll to zoom<br>drag to pan<br>click to enter</div>
+  <div id="labels"></div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx    = canvas.getContext('2d');
+const labelsDiv = document.getElementById('labels');
+const backBtn   = document.getElementById('back-btn');
+let W, H;
+
+// ── Layout HUD panels ─────────────────────────────
+function layoutHUD() {
+  const MARGIN = 52;
+  const bio = document.getElementById('panel-bio');
+  // Bio vertically centered, nudged slightly above mid
+  bio.style.top = Math.round(H * 0.42) + 'px';
+
+  // Contact: left edge overlaps bio significantly (left-ward overlap as requested)
+  // top: overlaps bio's bottom
+  requestAnimationFrame(() => {
+    const br = bio.getBoundingClientRect();
+    const cp = document.getElementById('panel-contact');
+    // overlap leftward: contact left = bio left + 30 (instead of bio right - x)
+    cp.style.left = (MARGIN + 30) + 'px';
+    cp.style.top  = Math.round(br.bottom - 28) + 'px';
+  });
+}
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  layoutHUD();
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── Camera ────────────────────────────────────────
+// CZ bubble (world 0,0) should sit at roughly 72% x, 50% y of screen
+// so it's clearly right-of-center and the left panels have room
+const MIN_ZOOM = 1.1;   // default zoom — can't go below this
+const MAX_ZOOM = 7.0;
+
+function defaultCam() {
+  const sx = W * 0.72, sy = H * 0.50;
+  return {
+    x: -(sx - W/2) / MIN_ZOOM,
+    y: -(sy - H/2) / MIN_ZOOM,
+    zoom: MIN_ZOOM
+  };
+}
+let cam  = defaultCam();
+let tcam = { ...cam };
+let dragging = false, lMX = 0, lMY = 0;
+
+// ── Nodes ─────────────────────────────────────────
+// All radii doubled from v4/v5. Node positions tighter.
+// labelAnchor: which edge of the circle the label center sits on
+//   'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'right' | 'left' | 'top' | 'bottom'
+const nodes = [
+  // Layer 0 — you. Huge.
+  { id:'cz',        label:'CZ — 001',       title:'Cynthia Zhang',          x:   0, y:   0, r:200, layer:0, type:'circle', inside:true,  lAnchor:'center',       parentId:null },
+
+  // Layer 1 — heavy LEFT and below
+  { id:'research',  label:'R — 7.4',         title:'Research',               x:-330, y:-100, r:130, layer:1, type:'circle', inside:true,  lAnchor:'top-right',    parentId:'cz' },
+  { id:'about',     label:'F — 2.4',         title:'About Me',               x:-360, y: 200, r:115, layer:1, type:'circle', inside:false, lAnchor:'top-right',    parentId:'cz' },
+  { id:'athlete',   label:'B — 3/8',         title:'Athletics & Life',       x:-120, y: 380, r:100, layer:1, type:'circle', inside:false, lAnchor:'top-right',    parentId:'cz' },
+  // sparse right
+  { id:'work',      label:'G — 4/2',         title:'Work & Co-ops',          x: 340, y:-160, r:110, layer:1, type:'circle', inside:true,  lAnchor:'bottom-left',  parentId:'cz' },
+  { id:'systems',   label:'A — 7/3',         title:'Systems & Projects',     x: 310, y: 240, r: 95, layer:1, type:'circle', inside:false, lAnchor:'top-left',     parentId:'cz' },
+
+  // Layer 2 — circle nodes
+  { id:'ml',        label:'VE — 0084',       title:'Machine Learning',       x:-520, y:-230, r: 72, layer:2, type:'circle', inside:false, lAnchor:'top-right',    parentId:'research' },
+  { id:'hail',      label:'FN — 9062',       title:'N. Hail Project',        x:-300, y:-330, r: 58, layer:2, type:'circle', inside:false, lAnchor:'top-right',    parentId:'research' },
+  { id:'model',     label:'DS — 2893',       title:'GAN Paper',              x:-480, y:-370, r: 48, layer:2, type:'circle', inside:false, lAnchor:'bottom-right', parentId:'research' },
+  { id:'cogsci',    label:'SR — 7832',       title:'Cognitive Science',      x:-560, y:  80, r: 65, layer:2, type:'circle', inside:false, lAnchor:'bottom-right', parentId:'about' },
+  { id:'adhd',      label:'P — 8931',        title:'ADHD & Cognition',       x:-520, y: 340, r: 54, layer:2, type:'circle', inside:false, lAnchor:'top-right',    parentId:'about' },
+  { id:'swim',      label:'DW — 7561',       title:'Competitive Swimming',   x:-260, y: 530, r: 52, layer:2, type:'circle', inside:false, lAnchor:'top-right',    parentId:'athlete' },
+  { id:'graph',     label:'RO — 2893',       title:'Graph Thinking',         x: 120, y: 510, r: 52, layer:2, type:'circle', inside:false, lAnchor:'top-left',     parentId:'systems' },
+  { id:'rag',       label:'RO — 9472',       title:'RAG / pgvector',         x: 540, y:-120, r: 48, layer:2, type:'circle', inside:false, lAnchor:'bottom-left',  parentId:'work' },
+  { id:'exec',      label:'KU — 0073',       title:'execOS',                 x: 530, y: 300, r: 48, layer:2, type:'circle', inside:false, lAnchor:'top-left',     parentId:'systems' },
+
+  // Layer 3 — terminals (label only, no circle)
+  { id:'ieee',      label:'FG — 8374',       title:'IEEE ISEC 2024',         x:-620, y:-500, r:  0, layer:3, type:'label', inside:false, lAnchor:'center',       parentId:'model' },
+  { id:'gan_arch',  label:'ET — 3940',       title:'GAN Architecture',       x:-700, y:-280, r:  0, layer:3, type:'label', inside:false, lAnchor:'center',       parentId:'ml' },
+  { id:'note',      label:'Q — 9973',        title:'Neural Netbook',         x: 260, y: 640, r:  0, layer:3, type:'label', inside:false, lAnchor:'center',       parentId:'graph' },
+  { id:'mun',       label:'VA — 2904',       title:'Model UN',               x:-700, y: 160, r:  0, layer:3, type:'label', inside:false, lAnchor:'center',       parentId:'cogsci' },
+  { id:'depth',     label:'G — 3943',        title:'Depth Processing',       x:-680, y: 420, r:  0, layer:3, type:'label', inside:false, lAnchor:'center',       parentId:'adhd' },
+  { id:'triathlon', label:'RT — 7832',       title:'Triathlon Training',     x:-400, y: 660, r:  0, layer:3, type:'label', inside:false, lAnchor:'center',       parentId:'swim' },
+  { id:'supabase',  label:'SH — 456',        title:'Supabase / pgvector',    x: 700, y: 40,  r:  0, layer:3, type:'label', inside:false, lAnchor:'center',       parentId:'rag' },
+  { id:'fastapi',   label:'B — 784',         title:'FastAPI / execOS',       x: 700, y: 420, r:  0, layer:3, type:'label', inside:false, lAnchor:'center',       parentId:'exec' },
+];
+
+const edges = [
+  ['cz','research',false],['cz','work',false],['cz','systems',false],
+  ['cz','about',false],['cz','athlete',false],
+  ['research','ml',false],['research','hail',false],['research','model',false],
+  ['model','ieee',false],['ml','gan_arch',false],
+  ['about','cogsci',false],['about','adhd',false],
+  ['cogsci','mun',false],['adhd','depth',false],
+  ['athlete','swim',false],['swim','triathlon',false],
+  ['systems','graph',false],['systems','exec',false],
+  ['graph','note',false],['exec','fastapi',false],
+  ['work','rag',false],['rag','supabase',false],
+  // cross-domain amber dashed
+  ['ml','cogsci',true],['adhd','graph',true],
+  ['model','ml',true],['hail','swim',true],
+  ['cogsci','adhd',true],['research','cogsci',true],
+  ['exec','graph',true],['rag','ieee',true],
+];
+
+// ── White string design ───────────────────────────
+// Deliberately designed: traces right edge top→bottom, bleeds into CZ bubble,
+// then curls below and left toward the panel area.
+// Three layers: sparse background web + intentional spine + curl
+function makeStringLines() {
+  const lines = [];
+
+  // Layer A: right-side neural web (like reference image)
+  // Anchored around the right portion (x > 100 in world), many threads
+  for(let i=0;i<180;i++){
+    const cx = 300, cy = 100;
+    const a1 = Math.random()*Math.PI*2, d1 = 80+Math.random()*500;
+    const a2 = a1+(Math.random()-.5)*1.6, d2 = 60+Math.random()*500;
+    lines.push({
+      x1:cx+Math.cos(a1)*d1, y1:cy+Math.sin(a1)*d1,
+      mx:cx+(Math.random()-.5)*380, my:cy+(Math.random()-.5)*380,
+      x2:cx+Math.cos(a2)*d2, y2:cy+Math.sin(a2)*d2,
+      a:0.025+Math.random()*0.07, w:0.3, type:'web'
+    });
+  }
+
+  // Layer B: deliberate spine — vertical threads tracing right edge top→bottom
+  // These are brighter, slightly thicker. They flow from top-right, curve through
+  // the CZ bubble zone, then tail off bottom-left toward the panel area.
+  const spinePoints = [
+    // [x1,y1, cx,cy (control), x2,y2, alpha, width]
+    [600,-400,  280, 100,  -200, 500,  0.18, 0.7],
+    [620,-300,  300,  80,  -180, 600,  0.14, 0.5],
+    [580,-500,  200, 200,  -280, 480,  0.12, 0.6],
+    [640,-200,  350, 150,  -100, 520,  0.10, 0.5],
+    [560,-600,  160, 300,  -320, 420,  0.09, 0.4],
+    [500,-350,  250,  50,  -150, 580,  0.13, 0.6],
+    [660,-100,  320, 250,   -80, 560,  0.08, 0.4],
+    // curl below CZ toward panel (left side, below center)
+    [200, 400, -100, 550,  -380, 680,  0.11, 0.5],
+    [100, 450, -150, 560,  -420, 650,  0.09, 0.4],
+    [300, 380,  -80, 520,  -350, 700,  0.08, 0.3],
+  ];
+  spinePoints.forEach(([x1,y1,mx,my,x2,y2,a,w]) => {
+    lines.push({x1,y1,mx,my,x2,y2,a,w,type:'spine'});
+  });
+
+  return lines;
+}
+const strings = makeStringLines();
+
+// ── Nav ───────────────────────────────────────────
+let active = nodes[0], history = [];
+
+function zoomTo(n) {
+  if(active) history.push(active);
+  active = n;
+  const zMap = [MIN_ZOOM, 1.8, 2.8, 4.0];
+  const z = Math.max(MIN_ZOOM, zMap[n.layer]??1.8);
+  const sx = W*0.72, sy = H*0.50;
+  tcam.x = n.x - (sx-W/2)/z;
+  tcam.y = n.y - (sy-H/2)/z;
+  tcam.zoom = z;
+  backBtn.style.display = history.length ? 'block' : 'none';
+}
+function goBack() {
+  if(!history.length) return;
+  const prev = history.pop();
+  active = prev;
+  const zMap = [MIN_ZOOM,1.8,2.8,4.0];
+  const z = Math.max(MIN_ZOOM, zMap[prev.layer]??MIN_ZOOM);
+  const sx = W*0.72, sy = H*0.50;
+  tcam.x = prev.x - (sx-W/2)/z;
+  tcam.y = prev.y - (sy-H/2)/z;
+  tcam.zoom = z;
+  backBtn.style.display = history.length ? 'block' : 'none';
+}
+window.addEventListener('keydown', e=>{ if(e.key==='Escape') goBack(); });
+
+// ── Coords ────────────────────────────────────────
+function w2s(wx,wy){ return {x:W/2+(wx-cam.x)*cam.zoom, y:H/2+(wy-cam.y)*cam.zoom}; }
+
+// Compute label position: place label so its center sits on the circle's edge
+// at the corner indicated by lAnchor
+function labelPos(n, el) {
+  const s  = w2s(n.x, n.y);
+  const sr = n.r * cam.zoom;
+  if(n.type==='label' || n.inside) return {x: s.x, y: s.y, tx:'-50%', ty:'-50%'};
+
+  // Label half-dims (approximate from font)
+  const lw = (el.offsetWidth  || 60) / 2;
+  const lh = (el.offsetHeight || 18) / 2;
+  const D  = 0.72; // fraction along diagonal — 0.707 = 45°
+
+  switch(n.lAnchor) {
+    case 'top-right':
+      return { x: s.x + sr*D, y: s.y - sr*D, tx:'0%',    ty:'-100%' };
+    case 'top-left':
+      return { x: s.x - sr*D, y: s.y - sr*D, tx:'-100%', ty:'-100%' };
+    case 'bottom-right':
+      return { x: s.x + sr*D, y: s.y + sr*D, tx:'0%',    ty:'0%' };
+    case 'bottom-left':
+      return { x: s.x - sr*D, y: s.y + sr*D, tx:'-100%', ty:'0%' };
+    case 'right':
+      return { x: s.x + sr,   y: s.y,         tx:'0%',    ty:'-50%' };
+    case 'left':
+      return { x: s.x - sr,   y: s.y,         tx:'-100%', ty:'-50%' };
+    case 'top':
+      return { x: s.x,        y: s.y - sr,    tx:'-50%',  ty:'-100%' };
+    case 'bottom':
+      return { x: s.x,        y: s.y + sr,    tx:'-50%',  ty:'0%' };
+    default:
+      return { x: s.x, y: s.y, tx:'-50%', ty:'-50%' };
+  }
+}
+
+// ── Label DOM ─────────────────────────────────────
+const lEls = {};
+function syncLabels() {
+  nodes.forEach(n => {
+    const s  = w2s(n.x, n.y);
+    const vis = s.x>-200&&s.x<W+200&&s.y>-200&&s.y<H+200;
+    if(!vis){ if(lEls[n.id]) lEls[n.id].style.display='none'; return; }
+
+    if(!lEls[n.id]){
+      const el = document.createElement('div');
+      let cls = 'nlabel';
+      if(n.inside)        cls += ' inside';
+      if(n.type==='label') cls += ' terminal';
+      el.className = cls;
+      el.textContent = n.label;
+      el.addEventListener('click', ()=>zoomTo(n));
+      labelsDiv.appendChild(el);
+      lEls[n.id] = el;
+    }
+    const el  = lEls[n.id];
+    el.style.display = '';
+    const pos = labelPos(n, el);
+    el.style.left      = pos.x + 'px';
+    el.style.top       = pos.y + 'px';
+    el.style.transform = `translate(${pos.tx},${pos.ty})`;
+    el.classList.toggle('active', n.id === active?.id);
+  });
+}
+
+// ── Render ────────────────────────────────────────
+let t = 0;
+function draw() {
+  t += 0.002;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#060606'; ctx.fillRect(0,0,W,H);
+
+  // White strings — draw web layer first (dim), then spine (brighter)
+  strings.forEach(l => {
+    const s1=w2s(l.x1,l.y1), sm=w2s(l.mx,l.my), s2=w2s(l.x2,l.y2);
+    ctx.beginPath(); ctx.moveTo(s1.x,s1.y);
+    ctx.quadraticCurveTo(sm.x,sm.y,s2.x,s2.y);
+    ctx.strokeStyle=`rgba(255,255,255,${l.a})`;
+    ctx.lineWidth=l.w; ctx.stroke();
+  });
+
+  // Edges — white for structural (not pink), amber for cross
+  edges.forEach(([aid,bid,cross])=>{
+    const na=nodes.find(n=>n.id===aid), nb=nodes.find(n=>n.id===bid);
+    if(!na||!nb) return;
+    const sa=w2s(na.x,na.y), sb=w2s(nb.x,nb.y);
+    const dx=sb.x-sa.x, dy=sb.y-sa.y;
+    const bend=((na.x*7+nb.y*3)%5>2)?0.24:-0.20;
+    const mx=(sa.x+sb.x)/2+dy*bend, my=(sa.y+sb.y)/2-dx*bend;
+    const depth=Math.max(na.layer,nb.layer);
+    const ba=[0.65,0.42,0.26,0.14][depth]??0.12;
+    ctx.beginPath(); ctx.moveTo(sa.x,sa.y);
+    ctx.quadraticCurveTo(mx,my,sb.x,sb.y);
+    if(cross){
+      ctx.strokeStyle=`rgba(255,185,80,${ba})`;
+      ctx.setLineDash([3,6]); ctx.lineWidth=0.6;
+    } else {
+      // white edges — depth-faded
+      ctx.strokeStyle=`rgba(255,255,255,${ba*0.9})`;
+      ctx.setLineDash([]); ctx.lineWidth=depth===0?1.2:0.6;
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+  });
+
+  // Terminal anchor dots
+  nodes.filter(n=>n.type==='label').forEach(n=>{
+    const s=w2s(n.x,n.y);
+    ctx.beginPath(); ctx.arc(s.x,s.y,3*cam.zoom,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,120,160,0.6)'; ctx.fill();
+  });
+
+  // Circles — largest first so no bubble shows behind another
+  // Fill with opaque dark so overlapping bubbles occlude each other
+  [...nodes].filter(n=>n.type==='circle').sort((a,b)=>b.r-a.r).forEach(n=>{
+    const s  = w2s(n.x, n.y);
+    const sr = n.r * cam.zoom;
+    const pulse = 1+Math.sin(t*1.0+n.x*0.014)*0.018;
+    const isAct = n.id===active?.id;
+
+    // Glow for large nodes
+    if(n.layer<=1){
+      const g=ctx.createRadialGradient(s.x,s.y,sr*0.3,s.x,s.y,sr*2.0*pulse);
+      const glowA = n.layer===0?0.12:0.06;
+      g.addColorStop(0,`rgba(255,100,160,${isAct?glowA*1.6:glowA})`);
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(s.x,s.y,sr*2.0*pulse,0,Math.PI*2);
+      ctx.fillStyle=g; ctx.fill();
+    }
+
+    // Opaque fill — occludes nodes behind it
+    ctx.beginPath(); ctx.arc(s.x,s.y,sr*pulse,0,Math.PI*2);
+    ctx.fillStyle='rgba(6,6,6,0.92)'; ctx.fill();
+
+    // Stroke — all nodes use bright pink except CZ (white) and active (white)
+    let stroke;
+    if(isAct)         stroke='rgba(255,255,255,0.92)';
+    else if(n.layer===0) stroke='rgba(255,255,255,0.58)';
+    else              stroke=`rgba(255,${100+n.layer*20},${160-n.layer*10},${0.75-n.layer*0.12})`;
+
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth   = n.layer===0 ? 1.5 : isAct ? 1.1 : 0.75;
+    ctx.stroke();
+  });
+
+  // Camera lerp
+  cam.x   += (tcam.x   - cam.x)   * 0.075;
+  cam.y   += (tcam.y   - cam.y)   * 0.075;
+  cam.zoom += (tcam.zoom - cam.zoom) * 0.075;
+
+  syncLabels();
+  requestAnimationFrame(draw);
+}
+
+// ── Input ─────────────────────────────────────────
+canvas.addEventListener('mousedown', e=>{
+  dragging=true; lMX=e.clientX; lMY=e.clientY;
+  canvas.style.cursor='grabbing';
+});
+window.addEventListener('mousemove', e=>{
+  if(!dragging) return;
+  tcam.x -= (e.clientX-lMX)/cam.zoom;
+  tcam.y -= (e.clientY-lMY)/cam.zoom;
+  lMX=e.clientX; lMY=e.clientY;
+});
+window.addEventListener('mouseup',()=>{ dragging=false; canvas.style.cursor='crosshair'; });
+
+canvas.addEventListener('wheel', e=>{
+  e.preventDefault();
+  const factor = e.deltaY>0 ? 0.88 : 1.13;
+  const newZ   = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, tcam.zoom*factor));
+  const wx = cam.x+(e.clientX-W/2)/cam.zoom;
+  const wy = cam.y+(e.clientY-H/2)/cam.zoom;
+  tcam.zoom = newZ;
+  tcam.x = wx-(e.clientX-W/2)/newZ;
+  tcam.y = wy-(e.clientY-H/2)/newZ;
+},{passive:false});
+
+let lTX=0,lTY=0;
+canvas.addEventListener('touchstart',e=>{ lTX=e.touches[0].clientX; lTY=e.touches[0].clientY; },{passive:true});
+canvas.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  tcam.x-=(e.touches[0].clientX-lTX)/cam.zoom;
+  tcam.y-=(e.touches[0].clientY-lTY)/cam.zoom;
+  lTX=e.touches[0].clientX; lTY=e.touches[0].clientY;
+},{passive:false});
+
+draw();
+</script>
+</body>
+</html>
