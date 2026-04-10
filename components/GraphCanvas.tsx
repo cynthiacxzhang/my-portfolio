@@ -7,6 +7,7 @@ import { EdgeLayer } from './graph/EdgeLayer'
 import { NodeLayer } from './graph/NodeLayer'
 import { NodeLabels } from './graph/NodeLabels'
 import { AmbientText } from './graph/AmbientText'
+import { PhysicsEngine } from './graph/PhysicsEngine'
 
 export function GraphCanvas() {
   return (
@@ -19,6 +20,7 @@ export function GraphCanvas() {
       }}
     >
       <CameraRig />
+      <PhysicsEngine />
       <FlowLines />
       <AttractorRings />
       <AmbientText />

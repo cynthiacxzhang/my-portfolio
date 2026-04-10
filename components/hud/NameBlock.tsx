@@ -5,7 +5,7 @@ const spaceMono = Space_Mono({ subsets: ['latin'], weight: ['400'] })
 
 export function NameBlock() {
   return (
-    <div style={{ position: 'absolute', top: 52, left: 52, pointerEvents: 'none' }}>
+    <div style={{ position: 'absolute', top: 104, left: 104, pointerEvents: 'none' }}>
       <h1
         className={cormorant.className}
         style={{
@@ -23,9 +23,9 @@ export function NameBlock() {
       <p
         className={spaceMono.className}
         style={{
-          fontSize: 8,
-          color: 'rgba(255,100,160,0.6)',
-          letterSpacing: '0.2em',
+          fontSize: 13,
+          color: 'rgba(255,100,160,0.75)',
+          letterSpacing: '0.18em',
           textTransform: 'uppercase',
           marginTop: 22,
           whiteSpace: 'nowrap',

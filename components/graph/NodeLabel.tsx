@@ -6,28 +6,30 @@ import { useGraphStore } from '@/store/graphStore'
 interface Props { node: GraphNode }
 
 function anchorOffset(node: GraphNode): [number, number] {
-  const D = node.r * 0.68
+  // D slightly inside edge so label center sits ON the circle rim
+  const D = node.r * 0.58
   switch (node.lAnchor) {
     case 'top-right':    return [ D, -D]
     case 'top-left':     return [-D, -D]
     case 'bottom-right': return [ D,  D]
     case 'bottom-left':  return [-D,  D]
-    case 'right':        return [node.r, 0]
-    case 'left':         return [-node.r, 0]
-    case 'top':          return [0, -node.r]
-    case 'bottom':       return [0,  node.r]
+    case 'right':        return [node.r * 0.92, 0]
+    case 'left':         return [-node.r * 0.92, 0]
+    case 'top':          return [0, -node.r * 0.92]
+    case 'bottom':       return [0,  node.r * 0.92]
     default:             return [0, 0]
   }
 }
 
+// Label horizontal center always on the anchor point
 function anchorTransform(anchor: GraphNode['lAnchor']): string {
   switch (anchor) {
-    case 'top-right':    return 'translate(0%, -100%)'
-    case 'top-left':     return 'translate(-100%, -100%)'
-    case 'bottom-right': return 'translate(0%, 0%)'
-    case 'bottom-left':  return 'translate(-100%, 0%)'
-    case 'right':        return 'translate(0%, -50%)'
-    case 'left':         return 'translate(-100%, -50%)'
+    case 'top-right':    return 'translate(-50%, -100%)'
+    case 'top-left':     return 'translate(-50%, -100%)'
+    case 'bottom-right': return 'translate(-50%, 0%)'
+    case 'bottom-left':  return 'translate(-50%, 0%)'
+    case 'right':        return 'translate(-50%, -50%)'
+    case 'left':         return 'translate(-50%, -50%)'
     case 'top':          return 'translate(-50%, -100%)'
     case 'bottom':       return 'translate(-50%, 0%)'
     default:             return 'translate(-50%, -50%)'

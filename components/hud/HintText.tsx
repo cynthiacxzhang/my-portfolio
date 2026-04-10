@@ -2,8 +2,8 @@ export function HintText() {
   return (
     <div style={{
       position: 'absolute',
-      bottom: 44,
-      right: 52,
+      bottom: 88,
+      right: 104,
       fontFamily: "'Space Mono', monospace",
       fontSize: 7,
       color: 'rgba(255,255,255,0.13)',

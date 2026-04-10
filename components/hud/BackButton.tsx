@@ -12,7 +12,7 @@ export function BackButton() {
       onClick={goBack}
       style={{
         position: 'absolute',
-        top: 52,
+        top: 104,
         left: '50%',
         transform: 'translateX(-50%)',
         fontFamily: "'Space Mono', monospace",

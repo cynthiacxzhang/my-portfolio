@@ -2,6 +2,7 @@
 import { useRef, useCallback } from 'react'
 import { useGraphData } from '@/hooks/useGraphData'
 import { useGraphStore } from '@/store/graphStore'
+import { draggedId } from '@/lib/physics'
 import { GraphCanvas } from './GraphCanvas'
 import { HUD } from './hud/HUD'
 
@@ -19,12 +20,13 @@ export function GraphScene() {
   // We need the live camera zoom for pan calculations — store it in a ref
   // that CameraRig keeps updated. For now, use targetCam.zoom as approximation.
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (draggedId) return   // node drag in progress — don't start canvas pan
     dragging.current = true
     lastPos.current = { x: e.clientX, y: e.clientY }
   }, [])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!dragging.current) return
+    if (!dragging.current || draggedId) return
     const dx = e.clientX - lastPos.current.x
     const dy = e.clientY - lastPos.current.y
     lastPos.current = { x: e.clientX, y: e.clientY }
@@ -41,11 +43,13 @@ export function GraphScene() {
   }, [zoomWheel, targetCam])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (draggedId) return
     lastTouch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
   }, [])
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     e.preventDefault()
+    if (draggedId) return
     const dx = e.touches[0].clientX - lastTouch.current.x
     const dy = e.touches[0].clientY - lastTouch.current.y
     lastTouch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
