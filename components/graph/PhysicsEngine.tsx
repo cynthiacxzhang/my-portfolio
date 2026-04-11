@@ -17,10 +17,14 @@ export function PhysicsEngine() {
   const { camera, pointer } = useThree()
 
   useFrame(() => {
-    // Seed any new nodes
+    // Seed any new nodes; update rest position if data changed
     nodes.forEach(n => {
-      if (!physState.has(n.id)) {
+      const p = physState.get(n.id)
+      if (!p) {
         physState.set(n.id, { x: n.x, y: n.y, vx: 0, vy: 0, restX: n.x, restY: n.y })
+      } else if (p.restX !== n.x || p.restY !== n.y) {
+        p.restX = n.x
+        p.restY = n.y
       }
     })
 

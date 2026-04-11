@@ -18,18 +18,11 @@ function buildRings(node: GraphNode, isActive: boolean): RingSpec[] {
   const mainOp = isActive ? 0.98 : ([0.70, 0.68, 0.60, 0.52] as const)[node.layer]
   const c      = isActive ? '#ffffff' : base
 
-  const rings: RingSpec[] = [
+  return [
     { r: node.r * 1.13,  w: mainW * 0.22, op: mainOp * 0.16, color: c },
     { r: node.r * 1.055, w: mainW * 0.40, op: mainOp * 0.38, color: c },
     { r: node.r,         w: mainW,        op: mainOp,         color: c },
   ]
-  if (node.layer <= 1 || isActive) {
-    rings.push({ r: node.r * 0.87, w: mainW * 0.32, op: mainOp * 0.28, color: c })
-  }
-  if (node.layer === 0) {
-    rings.push({ r: node.r * 0.72, w: mainW * 0.18, op: mainOp * 0.15, color: '#ffffff' })
-  }
-  return rings
 }
 
 interface Props { node: GraphNode }
@@ -128,6 +121,12 @@ export function NodeMesh({ node }: Props) {
           <meshBasicMaterial color={ring.color} transparent opacity={ring.op} />
         </mesh>
       ))}
+
+      {/* Dark core — re-establishes black space inside the rings */}
+      <mesh>
+        <circleGeometry args={[node.r * 0.82, 64]} />
+        <meshBasicMaterial color="#060606" transparent={false} />
+      </mesh>
     </group>
   )
 }
