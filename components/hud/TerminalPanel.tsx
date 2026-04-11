@@ -8,7 +8,7 @@ export function TerminalPanel() {
     <div style={{
       position: 'absolute',
       left: 329,
-      top: 'calc(40vh + 140px)',
+      top: 'calc(50vh - 105px)',
       width: 300,
       height: 210,
       padding: '18px 22px 16px',

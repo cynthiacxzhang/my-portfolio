@@ -7,7 +7,7 @@ export function BioPanel() {
       style={{
         position: 'absolute',
         left: 104,
-        top: '40vh',
+        top: '34vh',
         width: 300,
         height: 210,
         padding: '18px 22px 16px',
