@@ -7,7 +7,7 @@ export function BioPanel() {
       style={{
         position: 'absolute',
         left: 104,
-        top: '28vh',
+        top: '40vh',
         width: 300,
         height: 210,
         padding: '18px 22px 16px',
@@ -19,25 +19,25 @@ export function BioPanel() {
         overflow: 'hidden',
       }}
     >
-      <p style={{ fontSize: 11, letterSpacing: '0.18em', color: 'rgba(255,100,160,0.55)', textTransform: 'uppercase', marginBottom: 14 }}>
+      <p style={{ fontSize: 10, letterSpacing: '0.18em', color: 'rgba(255,100,160,0.55)', textTransform: 'uppercase', marginBottom: 11 }}>
         Node — CZ — 001
       </p>
 
-      <div style={{ marginBottom: 9 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.85)', display: 'block', marginBottom: 1 }}>School</span>
-        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>University of Waterloo</span>
+      <div style={{ marginBottom: 8 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', display: 'block', marginBottom: 1 }}>School</span>
+        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>University of Waterloo</span>
       </div>
-      <div style={{ width: '100%', height: '0.5px', background: 'rgba(255,100,160,0.1)', margin: '8px 0' }} />
+      <div style={{ width: '100%', height: '0.5px', background: 'rgba(255,100,160,0.1)', margin: '7px 0' }} />
 
-      <div style={{ marginBottom: 9 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.85)', display: 'block', marginBottom: 1 }}>Focus</span>
-        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>CS + Cognitive Science</span>
+      <div style={{ marginBottom: 8 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', display: 'block', marginBottom: 1 }}>Focus</span>
+        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>CS + Cognitive Science</span>
       </div>
-      <div style={{ width: '100%', height: '0.5px', background: 'rgba(255,100,160,0.1)', margin: '8px 0' }} />
+      <div style={{ width: '100%', height: '0.5px', background: 'rgba(255,100,160,0.1)', margin: '7px 0' }} />
 
       <div>
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.85)', display: 'block', marginBottom: 1 }}>Currently</span>
-        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>Wealthsimple · Building in public</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', display: 'block', marginBottom: 1 }}>Currently</span>
+        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>Wealthsimple · Building in public</span>
       </div>
     </div>
   )

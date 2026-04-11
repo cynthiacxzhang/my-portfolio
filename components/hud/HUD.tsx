@@ -24,8 +24,8 @@ export function HUD() {
       <HintText />
       <div style={{
         position: 'absolute',
-        top: 104, right: 104,
-        fontSize: 10,
+        top: 268, right: 104,
+        fontSize: 9,
         letterSpacing: '0.22em',
         color: 'rgba(255,255,255,0.1)',
         textTransform: 'uppercase',

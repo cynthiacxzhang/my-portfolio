@@ -9,7 +9,7 @@ export function ContactPanel() {
     <div style={{
       position: 'absolute',
       left: 104,
-      top: 'calc(28vh + 280px)',
+      top: 'calc(40vh + 280px)',
       width: 300,
       height: 210,
       padding: '18px 22px 16px',
