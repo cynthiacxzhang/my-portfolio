@@ -5,7 +5,7 @@ const spaceMono = Space_Mono({ subsets: ['latin'], weight: ['400'] })
 
 export function NameBlock() {
   return (
-    <div style={{ position: 'absolute', top: 104, left: 104, pointerEvents: 'none' }}>
+    <div style={{ position: 'absolute', top: 104, left: 72, pointerEvents: 'none' }}>
       <h1
         className={cormorant.className}
         style={{
@@ -31,7 +31,7 @@ export function NameBlock() {
           whiteSpace: 'nowrap',
         }}
       >
-        ML Engineer &nbsp;·&nbsp; Uni of Waterloo &nbsp;·&nbsp; Wealthsimple
+        ML Engineer · uwaterloo · Wealthsimple
       </p>
     </div>
   )

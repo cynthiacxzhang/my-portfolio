@@ -7,13 +7,13 @@ export function TerminalPanel() {
   return (
     <div style={{
       position: 'absolute',
-      left: 329,
+      left: 297,
       top: 'calc(50vh - 105px)',
       width: 300,
       height: 210,
       padding: '18px 22px 16px',
-      border: '0.5px solid rgba(255,100,160,0.22)',
-      background: 'rgba(4,4,4,0.96)',
+      border: '1px solid rgba(255,100,160,0.55)',
+      background: 'rgba(18,8,14,0.82)',
       fontFamily: "'Space Mono', monospace",
       pointerEvents: 'auto',
       zIndex: 15,

@@ -1,6 +1,7 @@
 'use client'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGraphStore } from '@/store/graphStore'
+import { introTime } from '@/lib/introTime'
 import { useEffect } from 'react'
 
 const BASE_Z = 800
@@ -15,7 +16,8 @@ export function CameraRig() {
     setDimensions(size.width, size.height)
   }, [size.width, size.height, setDimensions])
 
-  useFrame(() => {
+  useFrame((_, delta) => {
+    introTime.elapsed += delta
     camera.position.x += (targetCam.x         - camera.position.x) * LERP
     camera.position.y += (-targetCam.y         - camera.position.y) * LERP
     camera.position.z += (BASE_Z / targetCam.zoom - camera.position.z) * LERP

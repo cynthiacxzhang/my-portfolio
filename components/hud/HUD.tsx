@@ -16,6 +16,17 @@ export function HUD() {
       zIndex: 10,
       fontFamily: "'Space Mono', monospace",
     }}>
+      {/* Right-edge vignette — mirrors the left margin, fades scene to black */}
+      <div style={{
+        position: 'absolute',
+        top: 0, right: 0,
+        width: '12%',
+        height: '100%',
+        background: 'linear-gradient(to right, transparent 0%, rgba(6,6,6,0.3) 60%, rgba(6,6,6,0.75) 90%, #060606 100%)',
+        pointerEvents: 'none',
+        zIndex: 5,
+      }} />
+
       <NameBlock />
       <BioPanel />
       <TerminalPanel />

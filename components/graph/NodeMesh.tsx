@@ -5,6 +5,7 @@ import { useGraphStore } from '@/store/graphStore'
 import { GraphNode } from '@/types/graph'
 import { livePos } from '@/lib/livePositions'
 import { physState, setDraggedId } from '@/lib/physics'
+import { fadeIn } from '@/lib/introTime'
 import { ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -36,6 +37,8 @@ export function NodeMesh({ node }: Props) {
   const tRef       = useRef(Math.random() * Math.PI * 2)
   const wasDragged = useRef(false)
 
+  const introDelay = 1.0 + node.layer * 0.3
+
   useFrame((_, delta) => {
     tRef.current += delta * 1.0
     const pulse = 1 + Math.sin(tRef.current + node.x * 0.014) * 0.018
@@ -44,6 +47,8 @@ export function NodeMesh({ node }: Props) {
     if (groupRef.current) {
       groupRef.current.position.x += (lx  - groupRef.current.position.x) * 0.12
       groupRef.current.position.y += (-ly - groupRef.current.position.y) * 0.12
+      const introScale = fadeIn(introDelay, 0.45)
+      if (introScale < 1) groupRef.current.scale.setScalar(introScale)
     }
   })
 
@@ -75,7 +80,7 @@ export function NodeMesh({ node }: Props) {
 
   // Glow: outer = pink atmosphere, mid = warm pink, inner = white (depth gradient)
   const glowRMult   = ([2.4, 2.0, 1.6, 1.2] as const)[node.layer]
-  const glowOpBase  = ([0.10, 0.06, 0.035, 0.018] as const)[node.layer]
+  const glowOpBase  = ([0.06, 0.038, 0.022, 0.012] as const)[node.layer]
   const intensity   = isActive ? 1.9 : 1.0
   const glowOpOuter = glowOpBase * intensity         // pink, outermost
   const glowOpMid   = glowOpBase * intensity * 0.7   // lighter pink, mid

@@ -2,6 +2,7 @@
 import { Html } from '@react-three/drei'
 import { GraphNode } from '@/types/graph'
 import { useGraphStore } from '@/store/graphStore'
+import { useState, useEffect } from 'react'
 
 interface Props { node: GraphNode }
 
@@ -42,7 +43,16 @@ export function NodeLabel({ node }: Props) {
   const isActive   = activeNode?.id === node.id
   const [dx, dy]   = anchorOffset(node)
 
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const ms = (1.8 + node.layer * 0.2) * 1000
+    const t = setTimeout(() => setVisible(true), ms)
+    return () => clearTimeout(t)
+  }, [node.layer])
+
   const labelStyle: React.CSSProperties = {
+    opacity:       visible ? 1 : 0,
+    transition:    'opacity 0.5s ease',
     fontFamily:    "'Space Mono', monospace",
     fontSize:      node.inside ? '10px' : node.type === 'label' ? '8.5px' : '9px',
     letterSpacing: node.inside ? '0.15em' : '0.07em',

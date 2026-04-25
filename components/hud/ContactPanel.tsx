@@ -8,13 +8,13 @@ export function ContactPanel() {
   return (
     <div style={{
       position: 'absolute',
-      left: 104,
-      top: 'calc(34vh + 280px)',
+      left: 72,
+      top: 'calc(34vh + 220px)',
       width: 300,
       height: 210,
       padding: '18px 22px 16px',
-      border: '0.5px solid rgba(255,100,160,0.2)',
-      background: 'rgba(6,6,6,0.95)',
+      border: '1px solid rgba(255,100,160,0.55)',
+      background: 'rgba(18,8,14,0.82)',
       fontFamily: "'Space Mono', monospace",
       pointerEvents: 'auto',
       zIndex: 15,
