@@ -3,16 +3,16 @@ import { Html } from '@react-three/drei'
 import { useState, useEffect } from 'react'
 
 const ANNOTATIONS = [
-  { text: '0.94 val accuracy',        x:  -30, y: -460, opacity: 0.38, size: 7.5 },
-  { text: 'waterloo · 3A',            x:  120, y: -400, opacity: 0.32, size: 7   },
-  { text: 'IEEE ISEC 2024',           x: -160, y: -530, opacity: 0.35, size: 7.5 },
-  { text: 'GAN → conv architecture',  x:  -80, y: -620, opacity: 0.28, size: 7   },
-  { text: 'supabase pgvector',        x:  230, y: -470, opacity: 0.30, size: 7   },
-  { text: 'co-op #4 · wealthsimple',  x: -220, y: -200, opacity: 0.33, size: 7.5 },
-  { text: 'cognitive load theory',    x: -190, y: -260, opacity: 0.28, size: 7   },
-  { text: '2500+ commits',            x:  190, y: -310, opacity: 0.28, size: 7   },
-  { text: 'fastapi · execOS',         x:  380, y: -290, opacity: 0.26, size: 7   },
-  { text: 'triathlete · swimmer',     x:   50, y: -350, opacity: 0.25, size: 7   },
+  { text: '0.94 val accuracy',           x:  -30, y: -470, opacity: 0.38, size: 7.5 },
+  { text: 'waterloo · 3B',               x:  140, y: -460, opacity: 0.32, size: 7   },
+  { text: 'IEEE ISEC 2024',              x: -170, y: -560, opacity: 0.35, size: 7.5 },
+  { text: 'GAN → conv architecture',     x:  -80, y: -630, opacity: 0.28, size: 7   },
+  { text: 'supabase pgvector',           x:  620, y: -210, opacity: 0.30, size: 7   },
+  { text: 'senior canadian national',    x: -660, y:  230, opacity: 0.33, size: 7.5 },
+  { text: 'cognitive load theory',       x: -480, y: -100, opacity: 0.28, size: 7   },
+  { text: '2500+ commits',               x:  460, y: -180, opacity: 0.28, size: 7   },
+  { text: 'fastapi · execOS',            x:  580, y:  180, opacity: 0.26, size: 7   },
+  { text: '12 years · rhythmic gym',     x: -560, y:  380, opacity: 0.25, size: 7   },
 ]
 
 function Annotation({ a, index }: { a: typeof ANNOTATIONS[number]; index: number }) {

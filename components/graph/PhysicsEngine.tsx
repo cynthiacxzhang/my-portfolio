@@ -23,8 +23,9 @@ export function PhysicsEngine() {
       if (!p) {
         physState.set(n.id, { x: n.x, y: n.y, vx: 0, vy: 0, restX: n.x, restY: n.y })
       } else if (p.restX !== n.x || p.restY !== n.y) {
-        p.restX = n.x
-        p.restY = n.y
+        p.restX = n.x; p.restY = n.y
+        p.x = n.x;    p.y = n.y
+        p.vx = 0;     p.vy = 0
       }
     })
 

@@ -37,10 +37,10 @@ export function EdgeLayer() {
       return [{
         pts,
         key:    `${edge.source}-${edge.target}`,
-        color:  edge.isCross ? '#ffd278' : '#ffffff',
-        alpha:  edge.isCross ? alpha : alpha * 0.9,
-        width:  depth === 0 ? 1.4 : nb.type === 'label' ? 0.4 : 0.6,
-        dashed: edge.isCross || nb.type === 'label',
+        color:  edge.isCross ? '#ffd278' : nb.type === 'label' ? '#ff50b4' : '#ffffff',
+        alpha:  edge.isCross ? alpha : nb.type === 'label' ? alpha * 2.2 : alpha * 0.9,
+        width:  depth === 0 ? 1.4 : nb.type === 'label' ? 0.7 : 0.6,
+        dashed: edge.isCross,
         depth,
       }]
     })

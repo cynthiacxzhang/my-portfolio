@@ -6,7 +6,7 @@
 
 export function ContactPanel() {
   return (
-    <div style={{
+    <div id="panel-contact" style={{
       position: 'absolute',
       left: 72,
       top: 'calc(34vh + 220px)',
@@ -43,19 +43,19 @@ export function ContactPanel() {
         />
       ))}
       <button style={{
-        marginTop: 10,
+        marginTop: 6,
         width: '100%',
         background: 'rgba(255,100,160,0.07)',
         border: '0.5px solid rgba(255,100,160,0.3)',
         color: 'rgba(255,100,160,0.8)',
         fontFamily: "'Space Mono', monospace",
-        fontSize: 11,
+        fontSize: 10,
         letterSpacing: '0.12em',
         textTransform: 'uppercase',
-        padding: '8px 0',
+        padding: '5px 0',
         cursor: 'pointer',
       }}>
-        transmit →
+        connect →
       </button>
     </div>
   )

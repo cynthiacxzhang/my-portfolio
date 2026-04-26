@@ -22,13 +22,13 @@ export function TerminalPanel() {
       <p style={{ fontSize: 11, letterSpacing: '0.18em', color: 'rgba(255,100,160,0.55)', textTransform: 'uppercase', marginBottom: 14 }}>
         System / Terminal
       </p>
-      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', lineHeight: 1.9 }}>
-        <div>$ ls ./graph</div>
-        <div style={{ color: 'rgba(255,100,160,0.45)' }}>research&nbsp;&nbsp;work&nbsp;&nbsp;systems</div>
-        <div style={{ color: 'rgba(255,100,160,0.45)' }}>about&nbsp;&nbsp;&nbsp;&nbsp;athlete</div>
-        <div style={{ marginTop: 6 }}>$ cd research</div>
+      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', lineHeight: 1.9 }}>
+        <div style={{ color: 'rgba(255,60,180,0.95)' }}>$ ls ./graph</div>
+        <div style={{ color: 'rgba(255,100,160,0.55)' }}>research&nbsp;&nbsp;work&nbsp;&nbsp;systems</div>
+        <div style={{ color: 'rgba(255,100,160,0.55)' }}>about&nbsp;&nbsp;&nbsp;&nbsp;athlete</div>
+        <div style={{ marginTop: 6, color: 'rgba(255,60,180,0.95)' }}>$ cd research</div>
         <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-          <span>$</span>
+          <span style={{ color: 'rgba(255,60,180,0.95)' }}>$</span>
           <span style={{
             display: 'inline-block',
             width: 7, height: 13,
