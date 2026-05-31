@@ -2,10 +2,10 @@
 import { useGraphStore } from '@/store/graphStore'
 
 export function BackButton() {
-  const history = useGraphStore(s => s.history)
-  const goBack  = useGraphStore(s => s.goBack)
+  const activeNode = useGraphStore(s => s.activeNode)
+  const goBack     = useGraphStore(s => s.goBack)
 
-  if (!history.length) return null
+  if (!activeNode) return null
 
   return (
     <button

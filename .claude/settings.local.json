@@ -24,7 +24,14 @@
       "Bash(kill 94892)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
       "Bash(cursor /Users/Cynthia/cynthiacxzhang-v2)",
-      "Bash(code /Users/Cynthia/cynthiacxzhang-v2)"
+      "Bash(code /Users/Cynthia/cynthiacxzhang-v2)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(node node_modules/typescript/lib/tsc.js --noEmit)",
+      "Bash(ls:*)",
+      "Bash(git -C /Users/Cynthia/cynthiacxzhang-v2 status)",
+      "Bash(git -C /Users/Cynthia/cynthiacxzhang-v2 log --oneline -5)",
+      "Bash(git -C /Users/Cynthia/cynthiacxzhang-v2 diff --stat HEAD)",
+      "Bash(git *)"
     ]
   }
 }

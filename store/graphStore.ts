@@ -24,7 +24,7 @@ interface GraphStore {
 }
 
 function defaultTarget(W: number, H: number): CameraState {
-  const sx = W * 0.76, sy = H * 0.47
+  const sx = W * 0.76, sy = H * 0.50
   return {
     x: -(sx - W / 2) / MIN_ZOOM,
     y: -(sy - H / 2) / MIN_ZOOM,
@@ -51,7 +51,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   zoomTo: (node) => {
     const { activeNode, history, W, H } = get()
     const z = Math.max(MIN_ZOOM, ZOOM_MAP[node.layer] ?? 1.8)
-    const sx = W * 0.76, sy = H * 0.47
+    const sx = W * 0.76, sy = H * 0.50
     set({
       activeNode: node,
       history: activeNode ? [...history, activeNode] : history,
@@ -64,17 +64,24 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   },
 
   goBack: () => {
-    const { history, W, H } = get()
-    if (!history.length) return
-    const prev = history[history.length - 1]
-    const z = Math.max(MIN_ZOOM, ZOOM_MAP[prev.layer] ?? MIN_ZOOM)
-    const sx = W * 0.76, sy = H * 0.47
+    const { activeNode, nodes, W, H } = get()
+    if (!activeNode) return
+    const parent = activeNode.parentId
+      ? nodes.find(n => n.id === activeNode.parentId) ?? null
+      : null
+    if (!parent) {
+      // already at layer 1, reset to overview
+      set({ targetCam: defaultTarget(W, H), activeNode: null, history: [] })
+      return
+    }
+    const z = Math.max(MIN_ZOOM, ZOOM_MAP[parent.layer] ?? MIN_ZOOM)
+    const sx = W * 0.76, sy = H * 0.50
     set({
-      activeNode: prev,
-      history: history.slice(0, -1),
+      activeNode: parent,
+      history: [],
       targetCam: {
-        x: prev.x - (sx - W / 2) / z,
-        y: prev.y - (sy - H / 2) / z,
+        x: parent.x - (sx - W / 2) / z,
+        y: parent.y - (sy - H / 2) / z,
         zoom: z,
       },
     })
